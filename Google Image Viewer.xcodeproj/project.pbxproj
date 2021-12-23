@@ -33,8 +33,8 @@
 		8F1405142770777D005FF5E5 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		8F35F30F27717C3B00D1E0E1 /* searchLogic.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = searchLogic.swift; sourceTree = "<group>"; };
 		8F7EE39E2772D5000077FB63 /* ResultCollectionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ResultCollectionView.swift; sourceTree = "<group>"; };
-		8F7EE3BE2774372B0077FB63 /* CachedImages+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = "CachedImages+CoreDataClass.swift"; path = "Google Image Viewer/CoreDataModels/CachedImages+CoreDataClass.swift"; sourceTree = "<group>"; };
-		8F7EE3BF2774372B0077FB63 /* CachedImages+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = "CachedImages+CoreDataProperties.swift"; path = "Google Image Viewer/CoreDataModels/CachedImages+CoreDataProperties.swift"; sourceTree = "<group>"; };
+		8F7EE3BE2774372B0077FB63 /* CachedImages+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CachedImages+CoreDataClass.swift"; sourceTree = "<group>"; };
+		8F7EE3BF2774372B0077FB63 /* CachedImages+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CachedImages+CoreDataProperties.swift"; sourceTree = "<group>"; };
 		8FAB2A6C2771EE88009BB5F1 /* CollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CollectionViewCell.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -52,8 +52,6 @@
 		8F1404F72770777B005FF5E5 = {
 			isa = PBXGroup;
 			children = (
-				8F7EE3BE2774372B0077FB63 /* CachedImages+CoreDataClass.swift */,
-				8F7EE3BF2774372B0077FB63 /* CachedImages+CoreDataProperties.swift */,
 				8F1405022770777B005FF5E5 /* Google Image Viewer */,
 				8F1405012770777B005FF5E5 /* Products */,
 			);
@@ -89,6 +87,8 @@
 		8F7EE3AC277431B90077FB63 /* CoreDataModels */ = {
 			isa = PBXGroup;
 			children = (
+				8F7EE3BE2774372B0077FB63 /* CachedImages+CoreDataClass.swift */,
+				8F7EE3BF2774372B0077FB63 /* CachedImages+CoreDataProperties.swift */,
 			);
 			path = CoreDataModels;
 			sourceTree = "<group>";
