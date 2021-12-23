@@ -191,7 +191,7 @@ class ViewController: UIViewController, UISearchBarDelegate, UICollectionViewDel
     }
     func collectionView(collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAtIndexPath indexPath: NSIndexPath) -> CGSize {
 
-        let numberOfCell: CGFloat = 4   //you need to give a type as CGFloat
+        let numberOfCell: CGFloat = 4
         let cellWidth = view.frame.width / numberOfCell
         return CGSize(width: cellWidth, height: cellWidth)
     }
