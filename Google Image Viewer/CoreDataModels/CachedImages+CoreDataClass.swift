@@ -12,6 +12,7 @@ import UIKit
 
 @objc(CachedImages)
 public class CachedImages: NSManagedObject {
+    // MARK - main logic of caching images. 
     func isImageExist(link: URL) -> Data? {
         let fetchRequest: NSFetchRequest<CachedImages> = CachedImages.fetchRequest()
         fetchRequest.predicate = NSPredicate(format: "imageLink == %@", link as CVarArg)

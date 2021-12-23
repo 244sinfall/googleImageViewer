@@ -4,6 +4,10 @@
 //
 //  Created by Дмитрий Филин on 21.12.2021.
 //
+//
+
+
+// This one is to load image into collectionviewcell
 
 import UIKit
 

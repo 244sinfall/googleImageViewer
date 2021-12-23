@@ -10,13 +10,14 @@ import CoreData
 import WebKit
 
 
-var selectedImage: ImageDataStructure?
+var selectedImage: ImageDataStructure? // global to track what image is selected from collection view
 
-var latestQuerry: String?
+var latestQuerry: String? // global to track state of searchbar
 
-var searchPage = 0
+var searchPage = 0 // inout var that goes to searchLogic and add new results to current search
 
 class WebpreviewViewController: UIViewController, WKUIDelegate {
+    // Just a view controller with full scale webview, triggered by open source button
     var webViewURL: URL?
     @IBOutlet weak var webViewControl: WKWebView!
     override func viewDidLoad() {
@@ -30,13 +31,7 @@ class WebpreviewViewController: UIViewController, WKUIDelegate {
 }
 
 class FullscreenViewController: UIViewController {
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        if segue.identifier == "showWebview" {
-            if let destination = segue.destination as? WebpreviewViewController {
-                destination.webViewURL = URL(string: selectedImage!.link)
-            }
-        }
-    }
+    // full screen view, triggered by a click on collectionviewcell
     let context = (UIApplication.shared.delegate as! AppDelegate).persistentContainer.viewContext
     var structure: [ImageDataStructure]?
     var structureIndex: Int?
@@ -72,6 +67,7 @@ class FullscreenViewController: UIViewController {
             self.loadFullscreenImage()
         }
     }
+    // it takes a selected image and loads full screen. if cached, it takes from cache, if not - downloads from imagestruct
     func loadFullscreenImage()
     {
         let container = CachedImages(context: context)
@@ -92,16 +88,25 @@ class FullscreenViewController: UIViewController {
                         self.fullscreenImage.image = UIImage(named: "defaultPlaceholder")
                     }
                 }
-                try! self.context.save()
+                do {
+                    try self.context.save() }
+                catch { self.context.rollback() }
             }
         }
 
     }
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        if segue.identifier == "showWebview" {
+            if let destination = segue.destination as? WebpreviewViewController {
+                destination.webViewURL = URL(string: selectedImage!.link)
+            }
+        }
+    }
 }
 
 class ViewController: UIViewController, UISearchBarDelegate, UICollectionViewDelegate, UICollectionViewDataSource {
-    var structureIndex: Int?
-    let context = (UIApplication.shared.delegate as! AppDelegate).persistentContainer.viewContext
+    var structureIndex: Int? // I HAVENT FOUND ANY OTHER WAY TO TRANSFER IMAGERESULT INDEX LOL
+    let context = (UIApplication.shared.delegate as! AppDelegate).persistentContainer.viewContext // it is very complicated, i googled it
     var imagesResult: [ImageDataStructure] = []
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
@@ -114,48 +119,6 @@ class ViewController: UIViewController, UISearchBarDelegate, UICollectionViewDel
                 }
             }
     }
-    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        //return imagesResult.count
-        return imagesResult.count // debug
-    }
-    
-    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        let container = CachedImages(context: context)
-        let resultCell = collectionView.dequeueReusableCell(withReuseIdentifier: "resultCell", for: indexPath) as! CollectionViewCell
-        resultCell.thumbnailPlace.image = UIImage(named: "defaultPlaceholder")
-        if imagesResult.count > 0 {
-            if let data = container.isImageExist(link: imagesResult[indexPath.item].thumbnail)
-            {
-                resultCell.thumbnailPlace.image = UIImage(data: data)
-            }
-            else {
-                DispatchQueue.global().async {
-                    let data = try? Data(contentsOf: self.imagesResult[indexPath.item].thumbnail)
-                    let toCacheImage = CachedImages(context: self.context)
-                    toCacheImage.imageData = data!
-                    toCacheImage.imageLink = self.imagesResult[indexPath.item].thumbnail
-                    DispatchQueue.main.async {
-                        resultCell.thumbnailPlace.image = UIImage(data: data!)
-                    }
-                }
-                do {
-                    try context.save()
-                }
-                catch {
-                    context.rollback()
-                }
-            }
-            /*do {
-                let data = try! Data(contentsOf: imagesResult[indexPath.item].thumbnail)
-                
-                
-            }
-            let getImageData = UIImage(data: )
-            resultCell.thumbnailPlace.image = imagesResult[Int(indexPath)].thumbnail*/
-        }
-        return resultCell
-    }
-    
     @IBOutlet weak var searchBar: UISearchBar!
     @IBOutlet weak var statusLabel: UILabel!
     @IBOutlet weak var searchResultFlowLayout: UICollectionViewFlowLayout!
@@ -168,7 +131,6 @@ class ViewController: UIViewController, UISearchBarDelegate, UICollectionViewDel
         resultCollectionView.delegate = self
         resultCollectionView.dataSource = self
         searchResultFlowLayout.itemSize = CGSize(width: CGFloat(view.frame.width/4)-10, height: CGFloat(view.frame.width/4)-10)
-        //getRegisteredImagesOnRows()
     }
     func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
         if searchText.isEmpty {
@@ -179,16 +141,6 @@ class ViewController: UIViewController, UISearchBarDelegate, UICollectionViewDel
         else {
             statusLabel.text = ""
         }
-    }
-    func getNumberOfData() -> Int {
-        let request = NSFetchRequest<NSNumber>(entityName: "CurrentSearch")
-        request.resultType = .countResultType
-        do {
-            let counts: [NSNumber] = try! context.fetch(request)
-            let count = Int(truncating: counts[0])
-            return count
-        }
-        
     }
 
     func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
@@ -260,7 +212,41 @@ class ViewController: UIViewController, UISearchBarDelegate, UICollectionViewDel
             }
         }
     }
+    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+        //returns amount of collectionviewcells
+        return imagesResult.count // debug
+    }
     
+    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+        // sets the collectionviewcell appearence
+        let container = CachedImages(context: context)
+        let resultCell = collectionView.dequeueReusableCell(withReuseIdentifier: "resultCell", for: indexPath) as! CollectionViewCell
+        resultCell.thumbnailPlace.image = UIImage(named: "defaultPlaceholder")
+        if imagesResult.count > 0 {
+            if let data = container.isImageExist(link: imagesResult[indexPath.item].thumbnail)
+            {
+                resultCell.thumbnailPlace.image = UIImage(data: data)
+            }
+            else {
+                DispatchQueue.global().async {
+                    let data = try? Data(contentsOf: self.imagesResult[indexPath.item].thumbnail)
+                    let toCacheImage = CachedImages(context: self.context)
+                    toCacheImage.imageData = data!
+                    toCacheImage.imageLink = self.imagesResult[indexPath.item].thumbnail
+                    DispatchQueue.main.async {
+                        resultCell.thumbnailPlace.image = UIImage(data: data!)
+                    }
+                }
+                do {
+                    try context.save()
+                }
+                catch {
+                    context.rollback()
+                }
+            }
+        }
+        return resultCell
+    }
 }
 
 
