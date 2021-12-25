@@ -37,7 +37,7 @@ struct SearchRequest {
     init(stringToSearch:String, pageToLoad:inout Int) throws {
         let correctStringToSearch = stringToSearch.replacingOccurrences(of: " ", with: "+").addingPercentEncoding(withAllowedCharacters: .urlHostAllowed) ?? stringToSearch.replacingOccurrences(of: " ", with: "+")
         let resourceFinal = "https://serpapi.com/search?q=\(correctStringToSearch)&tbm=isch&ijn=\(pageToLoad)&api_key=\(apiKey)" //PRODUCTION
-        print(resourceFinal)
+        //print(resourceFinal)
         //let resourceFinal = "https://serpapi.com/search?q=\(correctStringToSearch)&tbm=isch&ijn=\(pageToLoad)" //DEBUG
         guard let URLToPush = URL(string: resourceFinal) else { throw possibleErrors.IncorrentLink }
         self.URLToPush = URLToPush
