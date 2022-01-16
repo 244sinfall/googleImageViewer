@@ -1,6 +1,5 @@
 # googleImageViewer
-iOS Test Task for http://interesnee.ru/
-
+iOS Test Task
 
 Here is a little demo of app usage:
 
