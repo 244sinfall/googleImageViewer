@@ -1,5 +1,5 @@
 # googleImageViewer
-iOS Test Task
+iOS My First Test Task
 
 Here is a little demo of app usage:
 
